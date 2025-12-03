@@ -1,13 +1,15 @@
 #include "../fileOpener.cpp"
+#include <cmath>
 
 int leffOrRye(char dir);
 int parseLine(std::string line);
 void overUnderflow(int & currPos, int amt, int & passwd);
 void uncPass(int & passwd);
+int zeroPasses(int endingPos);
 
 int main()
 {
-	std::vector<std::string> fileInput = openFile("day1Input");
+	std::vector<std::string> fileInput = openFile("sample");
 	int password = 0;
 	int currentPos = 50;
 
@@ -44,15 +46,36 @@ void overUnderflow(int & currPos, int amt, int & passwd)
 {
 	currPos += amt;
 	currPos %= 100;
-	if(currPos == 0)
-	{
+	//check how many times 0 will be passed over
+	if(currPos < 0 || currPos > 99)
+		passwd += zeroPasses(currPos);
+	else if(currPos == 0)
 		uncPass(passwd);
-		std::cout << "Current Passwd: " << passwd << std::endl;
-	}
-	std::cout << "Current Pos: " << currPos <<  " and moved a distance of: " << amt << std::endl;
+	//std::cout << "Current Pos: " << currPos <<  " and moved a distance of: " << amt << std::endl;
 }
 
 void uncPass(int & passwd)
 {
 	passwd++;
+}
+
+int zeroPasses(int endingPos)
+{
+	int numPasses = 0;
+	
+	std::cout << "Total covered distance from " << endingPos << std::endl;
+	if(endingPos < 0)
+		while(endingPos < 0)
+		{
+			endingPos += 100;
+			numPasses++;
+		}
+	else if(endingPos > 100)
+		while(endingPos > 100)
+		{
+			endingPos -= 100;
+			numPasses++;
+		}
+
+	return numPasses;
 }
