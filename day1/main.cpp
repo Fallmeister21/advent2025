@@ -5,11 +5,12 @@ int leffOrRye(char dir);
 int parseLine(std::string line);
 void overUnderflow(int & currPos, int amt, int & passwd);
 void uncPass(int & passwd);
-int zeroPasses(int endingPos);
+int zeroPasses(int startPos, int distance);
+int passover(int startPos, int distance, int signage);
 
 int main()
 {
-	std::vector<std::string> fileInput = openFile("sample");
+	std::vector<std::string> fileInput = openFile("day1Input");
 	int password = 0;
 	int currentPos = 50;
 
@@ -44,14 +45,12 @@ int parseLine(std::string line)
 
 void overUnderflow(int & currPos, int amt, int & passwd)
 {
+	int startPos = 0;
+	startPos = currPos;
 	currPos += amt;
 	currPos %= 100;
 	//check how many times 0 will be passed over
-	if(currPos < 0 || currPos > 99)
-		passwd += zeroPasses(currPos);
-	else if(currPos == 0)
-		uncPass(passwd);
-	//std::cout << "Current Pos: " << currPos <<  " and moved a distance of: " << amt << std::endl;
+	passwd += zeroPasses(startPos, amt);
 }
 
 void uncPass(int & passwd)
@@ -59,23 +58,31 @@ void uncPass(int & passwd)
 	passwd++;
 }
 
-int zeroPasses(int endingPos)
+int zeroPasses(int startPos, int distance)
 {
 	int numPasses = 0;
-	
-	std::cout << "Total covered distance from " << endingPos << std::endl;
-	if(endingPos < 0)
-		while(endingPos < 0)
-		{
-			endingPos += 100;
-			numPasses++;
-		}
-	else if(endingPos > 100)
-		while(endingPos > 100)
-		{
-			endingPos -= 100;
-			numPasses++;
-		}
 
+	if(distance < 0)
+		numPasses = passover(startPos, distance, -1);
+	else
+		numPasses = passover(startPos, distance, 1);
+	
+	if(numPasses != 0 && numPasses != 1)
+		std::cout << "Passed 0 this many times: " << numPasses << std::endl;
+
+	return numPasses;
+}
+
+int passover(int startPos, int distance, int signage)
+{
+	int numPasses = 0;
+
+	while(distance != 0)
+	{
+		startPos += signage;
+		if(startPos == 0 || startPos % 100 == 0)
+			numPasses++;
+		distance += signage * -1;
+	}
 	return numPasses;
 }
