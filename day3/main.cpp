@@ -1,36 +1,43 @@
 #include "../fileOpener.cpp"
 #include <utility>
+#include <algorithm>
 
-std::vector<int> parseFileLines(std::string inLine);
-int getMAXJoltage(std::vector<int> joltageValues);
+//part1
+std::vector<int> parseFileLinesPart1(std::string inLine);
+int getMAXJoltagePart1(std::vector<int> joltageValues);
+void GetMaxJoltagePart1REAL(int & totalJoltagePart1, std::vector<std::vector<int>> batteryLinesPart1);
+
+//part2
+long long getMAXJoltagePart2(std::vector<int> joltageValues);
+void GetMaxJoltagePart2REAL(long long & totalJoltagePart2, std::vector<std::vector<int>> batteryLinesPart2);
+std::vector<int> getLargestValuePositions(std::vector<int> joltageValues);
+long long convertMaxesToStringToLongLong(std::vector<int> maxValues);
 
 int main()
 {
-	std::vector<std::string> fileInput = openFile("day3Input");
+	std::vector<std::string> fileInput = openFile("sample");
+	std::vector<std::vector<int>> batteryLinesPart1;
+	std::vector<std::vector<int>> batteryLinesPart2;
 	//BAH - TUH - RAEY
-	std::vector<std::vector<int>> batteryLines;
-	std::vector<int> individualJotages;
-	int totalJoltage = 0;
+	int totalJoltagePart1 = 0;
+	long long totalJoltagePart2 = 0;
 
 	for(int i = 0; i < fileInput.size(); i++)
 	{
 		std::string fileLine = fileInput[i];
-		batteryLines.push_back(parseFileLines(fileLine));
+		batteryLinesPart1.push_back(parseFileLinesPart1(fileLine));
+		batteryLinesPart2.push_back(parseFileLinesPart1(fileLine));
 	}
 
-	for(int i = 0; i < batteryLines.size(); i++)
-	{
-		std::vector<int> tempVector = batteryLines[i]; //fine, be that way
-		totalJoltage += getMAXJoltage(tempVector);
-		// for(int j = 0; j < batteryLines[i].size(); j++)
-		// 	std::cout << "Battery line " << i << " joltage value " << batteryLines[i][j] << std::endl;
-	}
+	//GetMaxJoltagePart1REAL(totalJoltagePart1, batteryLinesPart1);
+	GetMaxJoltagePart2REAL(totalJoltagePart2, batteryLinesPart2);
 
-	std::cout << "MAXIMUM joltage: " << totalJoltage << std::endl;
+	std::cout << "MAXIMUM joltage phantom blood style: " << totalJoltagePart1 << std::endl;
+	std::cout << "MAXIMUM joltage battle tendency style: " << totalJoltagePart2 << std::endl; //heh
 	return 0;
 }
 
-std::vector<int> parseFileLines(std::string inLine)
+std::vector<int> parseFileLinesPart1(std::string inLine)
 {
 	std::vector<int> returnInts;
 
@@ -45,7 +52,7 @@ std::vector<int> parseFileLines(std::string inLine)
 	return returnInts;
 }
 
-int getMAXJoltage(std::vector<int> joltageValues)
+int getMAXJoltagePart1(std::vector<int> joltageValues)
 {
 	int currMaxJoltage = 0;
 	int currNextMaxJoltage = 0;
@@ -71,4 +78,74 @@ int getMAXJoltage(std::vector<int> joltageValues)
 	std::cout << "Constructed total joltage for this set:" << returnValuesForInputJoltageListPASSEDIN << std::endl;
 
 	return returnValuesForInputJoltageListPASSEDIN; //what did you expect
+}
+
+void GetMaxJoltagePart1REAL(int & totalJoltagePart1, std::vector<std::vector<int>> batteryLinesPart1)
+{
+	for(int i = 0; i < batteryLinesPart1.size(); i++)
+	{
+		std::vector<int> tempVector = batteryLinesPart1[i]; //fine, be that way
+		totalJoltagePart1 += getMAXJoltagePart1(tempVector);
+		//for(int j = 0; j < batteryLinesPart1[i].size(); j++)
+		//	std::cout << "Battery line " << i << " joltage value " << batteryLinesPart1[i][j] << std::endl;
+		std::cout << std::endl;
+	}
+
+	return;
+}
+
+long long getMAXJoltagePart2(std::vector<int> joltageValues)
+{
+	std::vector<int> constructedBatteryList;
+	std::vector<int> maxBatteryValuePos;
+	long long returnedBatteryValue = 0;
+
+	// remove the 3 smallest values in this bih (positionally)
+	getLargestValuePositions(joltageValues);
+	//make a giant number string from vector (probably a function here)
+	// /returnedBatteryValue = convertMaxesToStringToLongLong(constructedBatteryList);
+	// += as long long to make return value
+
+	return returnedBatteryValue; //what did you expect
+}
+
+void GetMaxJoltagePart2REAL(long long & totalJoltagePart2, std::vector<std::vector<int>> batteryLinesPart2)
+{
+	for(int i = 0; i < batteryLinesPart2.size(); i++)
+	{
+		std::vector<int> tempVector = batteryLinesPart2[i]; //fine, be that way
+		totalJoltagePart2 += getMAXJoltagePart2(tempVector);
+		//for(int j = 0; j < batteryLinesPart2[i].size(); j++)
+		//	std::cout << "Battery line " << i << " joltage value " << batteryLinesPart2[i][j] << std::endl;
+		std::cout << std::endl;
+	}
+
+	return;
+}
+
+std::vector<int> getLargestValuePositions(std::vector<int> joltageValues)
+{
+	int skipCount = 0;
+	std::reverse(joltageValues.begin(), joltageValues.end());
+	std::vector<int> returnJoltages, workingJoltages = joltageValues;
+	while(returnJoltages.size() < 12)
+	{
+		
+	}
+	return returnJoltages;
+}
+
+long long convertMaxesToStringToLongLong(std::vector<int> maxValues)
+{
+	std::string constructedStringLong;
+	long long returnLongLong;
+	for(int i = 0; i < maxValues.size(); i++)
+	{
+		std::cout << "Max Value here: " << maxValues[i] << std::endl;
+		constructedStringLong += std::to_string(maxValues[i]);
+	}
+	returnLongLong = std::stoll(constructedStringLong);
+	std::cout << "Passing back: " << returnLongLong << std::endl;
+
+	return returnLongLong;
 }
