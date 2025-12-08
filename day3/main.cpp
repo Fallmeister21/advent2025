@@ -6,7 +6,7 @@ int getMAXJoltage(std::vector<int> joltageValues);
 
 int main()
 {
-	std::vector<std::string> fileInput = openFile("sample");
+	std::vector<std::string> fileInput = openFile("day3Input");
 	//BAH - TUH - RAEY
 	std::vector<std::vector<int>> batteryLines;
 	std::vector<int> individualJotages;
@@ -22,10 +22,11 @@ int main()
 	{
 		std::vector<int> tempVector = batteryLines[i]; //fine, be that way
 		totalJoltage += getMAXJoltage(tempVector);
-		for(int j = 0; j < batteryLines[i].size(); j++)
-			std::cout << "Battery line " << i << " joltage value " << batteryLines[i][j] << std::endl;
-		std::cout << std::endl;
+		// for(int j = 0; j < batteryLines[i].size(); j++)
+		// 	std::cout << "Battery line " << i << " joltage value " << batteryLines[i][j] << std::endl;
 	}
+
+	std::cout << "MAXIMUM joltage: " << totalJoltage << std::endl;
 	return 0;
 }
 
@@ -55,17 +56,19 @@ int getMAXJoltage(std::vector<int> joltageValues)
 	for(int i = 0; i < joltageValues.size(); i++)
 	{
 		currentLookingAtJoltageFromListREAL = joltageValues[i];
-		if(currMaxJoltage < currentLookingAtJoltageFromListREAL)
-		{            //Step 1: secure the keys
+		if(currMaxJoltage < currentLookingAtJoltageFromListREAL && i + 1 != joltageValues.size())
+		{
 			currMaxJoltage = currentLookingAtJoltageFromListREAL;
 			currNextMaxJoltage = 0;
 		}
-			//Step 2: ascend from darkness
 		else if(currentLookingAtJoltageFromListREAL > currNextMaxJoltage)
 			currNextMaxJoltage = currentLookingAtJoltageFromListREAL;
 	}
+	//std::cout << "Max joltage values from this set: " << currMaxJoltage << " least max: " << currNextMaxJoltage << std::endl;
+	std::string returnInit = std::to_string(currMaxJoltage) + std::to_string(currNextMaxJoltage);
+	returnValuesForInputJoltageListPASSEDIN = std::stoi(returnInit);
 
-	std::cout << "Max joltage values from this set: " << currMaxJoltage << " least max: " << currNextMaxJoltage << std::endl;
+	std::cout << "Constructed total joltage for this set:" << returnValuesForInputJoltageListPASSEDIN << std::endl;
 
 	return returnValuesForInputJoltageListPASSEDIN; //what did you expect
 }
