@@ -6,32 +6,43 @@ std::vector<std::pair<int, std::string>> createGoodPassableVector(std::vector<st
 bool checkRollOfPaper(std::vector<std::pair<int, std::string>> mulRowsToCheck, std::pair<int,int> posLine);
 int checkForAboveBelow(std::vector<std::pair<int, std::string>> mulRowsToCheck, std::pair<int, int> linePos);
 int checkForNextToSpace(std::string sinRowToCheck, int pos, bool isCurrentLine);
+void convertToRollHoles(std::vector<std::string> & warehouse);
 
 int main()
 {
 	std::vector<std::string> fileInput = openFile("day4Input");
 	int movableRolls = 0;
+	int rollsRemoved = 0;
+	bool canContinue = true;
 
-	for(int i = 0; i < fileInput.size(); i++)
+	while(canContinue)
 	{
-		std::vector<int> lines2Check = GetLinesToCheck(i, fileInput[i].size()); //just 3 we be lookin at yo
-
-		//from previous to next (ranged)
-		std::vector<std::pair<int, std::string>> linesPassed = createGoodPassableVector(fileInput, lines2Check, i);
-
-		for(int j = 0; j < fileInput[i].size(); j++)
+		movableRolls = 0;
+		for(int i = 0; i < fileInput.size(); i++)
 		{
-			if(fileInput[i][j] == '@')
+			std::vector<int> lines2Check = GetLinesToCheck(i, fileInput[i].size()); //just 3 we be lookin at yo
+
+			//from previous to next (ranged)
+			std::vector<std::pair<int, std::string>> linesPassed = createGoodPassableVector(fileInput, lines2Check, i);
+
+			for(int j = 0; j < fileInput[i].size(); j++)
 			{
-				//pair of line position
-				auto linePosPair = std::make_pair(i,j);
-				if(checkRollOfPaper(linesPassed, linePosPair))
+				if(fileInput[i][j] == '@')
 				{
-					fileInput[i][j] = 'x';
-					movableRolls++;
+					//pair of line position
+					auto linePosPair = std::make_pair(i,j);
+					if(checkRollOfPaper(linesPassed, linePosPair))
+					{
+						fileInput[i][j] = 'x';
+						movableRolls++;
+					}
 				}
 			}
 		}
+		rollsRemoved += movableRolls;
+		convertToRollHoles(fileInput);
+		if(movableRolls == 0)
+			canContinue = false;
 	}
 
 	//re-output to check how we did
@@ -42,6 +53,7 @@ int main()
 		std::cout << std::endl;
 	}
 	std::cout << "Movable rolls: " << movableRolls << std::endl;
+	std::cout << "Total rolls removed: " << rollsRemoved << std::endl;
 	return 0;
 }
 
@@ -115,4 +127,16 @@ int checkForNextToSpace(std::string sinRowToCheck, int pos, bool isCurrentLine)
 	if(sinRowToCheck[pos - 1] == '@' || sinRowToCheck[pos - 1] == 'x')
 		returnCount++;
 	return returnCount;
+}
+
+void convertToRollHoles(std::vector<std::string> & warehouse)
+{
+	for(int i = 0; i < warehouse.size(); i++)
+	{
+		for(int j = 0; j < warehouse[i].size(); j++)
+		{
+			if(warehouse[i][j] == 'x')
+				warehouse[i][j] = '.';
+		}
+	}
 }
