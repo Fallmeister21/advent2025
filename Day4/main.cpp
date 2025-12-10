@@ -3,38 +3,45 @@
 
 std::vector<int> GetLinesToCheck(int currentLine, int maxLineSize);
 std::vector<std::pair<int, std::string>> createGoodPassableVector(std::vector<std::string> & currLines, std::vector<int> & lookingLines, int currentLine);
-bool checkRollOfPaper(std::vector<std::pair<int, std::string>> mulRowsToCheck, int currentPos);
-bool checkForAboveBelow(int direction);
-bool checkForNextToSpace(std::vector<std::string> sinRowToCheck);
+bool checkRollOfPaper(std::vector<std::pair<int, std::string>> mulRowsToCheck, std::pair<int,int> posLine);
+int checkForAboveBelow(std::vector<std::pair<int, std::string>> mulRowsToCheck, std::pair<int, int> linePos);
+int checkForNextToSpace(std::string sinRowToCheck, int pos, bool isCurrentLine);
 
 int main()
 {
-	std::vector<std::string> fileInput = openFile("sample");
-	;
+	std::vector<std::string> fileInput = openFile("day4Input");
+	int movableRolls = 0;
 
 	for(int i = 0; i < fileInput.size(); i++)
 	{
-		//std::cout << "Line number " << i << ": " << fileInput[i] << std::endl;
 		std::vector<int> lines2Check = GetLinesToCheck(i, fileInput[i].size()); //just 3 we be lookin at yo
 
 		//from previous to next (ranged)
 		std::vector<std::pair<int, std::string>> linesPassed = createGoodPassableVector(fileInput, lines2Check, i);
-		for(int k = 0; k < linesPassed.size(); k++)
-			std::cout << "Checking this weird setup: Line-> " << linesPassed[k].first << " line value-> " << linesPassed[k].second << std::endl;
-		std::cout << std::endl;
 
-		//for(int j = 0; j < fileInput[i].size(); j++)
+		for(int j = 0; j < fileInput[i].size(); j++)
 		{
-			bool goodRollOfPaper = false;
-
-			//if(fileInput[i][j] == '@')
+			if(fileInput[i][j] == '@')
 			{
-				//goodRollOfPaper = checkRollOfPaper(linesPassed, j);
-				
+				//pair of line position
+				auto linePosPair = std::make_pair(i,j);
+				if(checkRollOfPaper(linesPassed, linePosPair))
+				{
+					fileInput[i][j] = 'x';
+					movableRolls++;
+				}
 			}
-			//std::cout << "PrevLine: " << lines2Check[0] << " CurrentLine: " << lines2Check[1] << " NextLine: " << lines2Check[2] << std::endl;
 		}
 	}
+
+	//re-output to check how we did
+	for(int i = 0; i < fileInput.size(); i++)
+	{
+		for(int j = 0; j < fileInput[i].size(); j++)
+			std::cout << fileInput[i][j];
+		std::cout << std::endl;
+	}
+	std::cout << "Movable rolls: " << movableRolls << std::endl;
 	return 0;
 }
 
@@ -61,28 +68,51 @@ std::vector<std::pair<int, std::string>> createGoodPassableVector(std::vector<st
 		if(insertedCurrentLine && lineWeAreCurrentlyLookingAtFromVector == currentLine)
 			continue;
 		auto tempPair = std::make_pair(lineWeAreCurrentlyLookingAtFromVector, currLines[lineWeAreCurrentlyLookingAtFromVector]);
-		std::cout << "pushing pair first: " << tempPair.first << " second: " << tempPair.second << std::endl;
 		returnLinesWithNums.push_back({tempPair});
 		if(lineWeAreCurrentlyLookingAtFromVector == currentLine)
 			insertedCurrentLine = true;
 	}
-	std::cout  << std::endl;
 
 	return returnLinesWithNums;
 }
 
-bool checkRollOfPaper(std::vector<std::string> mulRowsToCheck, int currentPos)
+bool checkRollOfPaper(std::vector<std::pair<int, std::string>> mulRowsToCheck, std::pair<int,int> posLine)
 {
+	int rollCount = 0;
+	bool canMoveRollaPaper = false;
+	rollCount = checkForAboveBelow(mulRowsToCheck, posLine);
 
-	return false;
+	if(rollCount < 4)
+		return true;
+	
+	return canMoveRollaPaper;
 }
 
-bool checkForAboveBelow(int direction)
+int checkForAboveBelow(std::vector<std::pair<int, std::string>> mulRowsToCheck, std::pair<int, int> linePos)
 {
-	return false;
+	int returnCount = 0;
+
+	for(int i = 0; i < mulRowsToCheck.size(); i++)
+	{
+		std::string currentLineString = mulRowsToCheck[i].second;
+		//check the current line
+		returnCount += checkForNextToSpace(currentLineString, linePos.second, 
+		true ? mulRowsToCheck[i].first == linePos.first : false);
+	}
+	return returnCount;
 }
 
-bool checkForNextToSpace(std::vector<std::string> sinRowToCheck)
+int checkForNextToSpace(std::string sinRowToCheck, int pos, bool isCurrentLine)
 {
-	return false;
+	//simpler than syrup
+	int returnCount = 0;
+
+	if(!isCurrentLine && 
+	  (sinRowToCheck[pos]     == '@' || sinRowToCheck[pos]     == 'x'))
+		returnCount++;
+	if(sinRowToCheck[pos + 1] == '@' || sinRowToCheck[pos + 1] == 'x')
+		returnCount++;
+	if(sinRowToCheck[pos - 1] == '@' || sinRowToCheck[pos - 1] == 'x')
+		returnCount++;
+	return returnCount;
 }
