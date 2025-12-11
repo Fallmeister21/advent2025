@@ -5,12 +5,16 @@
 std::pair<long long,long long> GetRanges(std::string unparsedRange);
 long long GetProductNum(std::string prodLine);
 bool ProductIsFresh(std::pair<long long, long long> range, long long prodNum);
+void SortProductRanges(std::vector<std::pair<long long, long long>> & prodRanges);
+std::vector<int> GetRangeIndexes(std::vector<std::pair<long long, long long>> & prodRanges);
 
 int main()
 {
-	std::vector<std::string> fileInput = openFile("day5Input");
+	std::vector<std::string> fileInput = openFile("sample");
 	std::vector<std::pair<long long,long long>> freshnessRanges;
 	std::vector<long long> prodNums;
+	std::vector<int> endRanges;
+
 	bool finishedWithRanges = false;
 	int numFreshProds = 0;
 
@@ -36,6 +40,16 @@ int main()
 			}
 		}
 	}
+
+	for(int i = 0; i < freshnessRanges.size(); i++)
+		std::cout << "Before: " << freshnessRanges[i].first << " " << freshnessRanges[i].second << std::endl;
+	std::cout << std::endl;
+
+	SortProductRanges(freshnessRanges);
+
+	for(int i = 0; i < freshnessRanges.size(); i++)
+		std::cout << "After: " << freshnessRanges[i].first << " " << freshnessRanges[i].second << std::endl;
+	std::cout << std::endl;
 
 	std::cout << "Num of fresh products: " << numFreshProds << std::endl;
 
@@ -72,4 +86,37 @@ bool ProductIsFresh(std::pair<long long, long long> range, long long prodNum)
 	if(prodNum >= range.first && prodNum <= range.second)
 		return true;
 	return false;
+}
+
+void SortProductRanges(std::vector<std::pair<long long, long long>> & prodRanges)
+{
+	bool swappedStyle = true;
+	while(swappedStyle)
+	{
+		swappedStyle = false;
+		for(int i = 0; i < prodRanges.size() - 1; i++)
+		{
+			std::pair<int, int> tempPair;
+			if(prodRanges[i].first > prodRanges[i + 1].first)
+			{
+				tempPair = prodRanges[i];
+				prodRanges[i] = prodRanges[i + 1];
+				prodRanges[i + 1] = tempPair;
+				swappedStyle = true;
+			}
+		}
+	}
+	return;
+}
+
+std::vector<int> GetRangeIndexes(std::vector<std::pair<long long, long long>> & prodRanges)
+{
+	std::vector<int> returnRangeIndexes;
+
+	for(int i = 0; i < prodRanges.size(); i++)
+	{
+		
+	}
+
+	return returnRangeIndexes;
 }
