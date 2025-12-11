@@ -6,17 +6,19 @@ std::pair<long long,long long> GetRanges(std::string unparsedRange);
 long long GetProductNum(std::string prodLine);
 bool ProductIsFresh(std::pair<long long, long long> range, long long prodNum);
 void SortProductRanges(std::vector<std::pair<long long, long long>> & prodRanges);
-std::vector<int> GetRangeIndexes(std::vector<std::pair<long long, long long>> & prodRanges);
+std::vector<std::pair<long long, long long>> GetRangeIndexes(std::vector<std::pair<long long, long long>> prodRanges);
+long long GetTotalofIndexRange(std::vector<std::pair<long long, long long>> ranges);
 
 int main()
 {
-	std::vector<std::string> fileInput = openFile("sample");
+	std::vector<std::string> fileInput = openFile("day5Input");
 	std::vector<std::pair<long long,long long>> freshnessRanges;
 	std::vector<long long> prodNums;
-	std::vector<int> endRanges;
+	std::vector<std::pair<long long, long long>> ranges;
 
 	bool finishedWithRanges = false;
 	int numFreshProds = 0;
+	long long totalNumFreshProds = 0;
 
 	for(int i = 0; i < fileInput.size(); i++)
 	{
@@ -41,17 +43,18 @@ int main()
 		}
 	}
 
-	for(int i = 0; i < freshnessRanges.size(); i++)
-		std::cout << "Before: " << freshnessRanges[i].first << " " << freshnessRanges[i].second << std::endl;
-	std::cout << std::endl;
-
 	SortProductRanges(freshnessRanges);
 
 	for(int i = 0; i < freshnessRanges.size(); i++)
 		std::cout << "After: " << freshnessRanges[i].first << " " << freshnessRanges[i].second << std::endl;
 	std::cout << std::endl;
 
+	ranges = GetRangeIndexes(freshnessRanges);
+	
+	totalNumFreshProds = GetTotalofIndexRange(ranges);
+
 	std::cout << "Num of fresh products: " << numFreshProds << std::endl;
+	std::cout << "Total num of fresh products: " << totalNumFreshProds << std::endl;
 
 	return 0;
 }
@@ -96,7 +99,7 @@ void SortProductRanges(std::vector<std::pair<long long, long long>> & prodRanges
 		swappedStyle = false;
 		for(int i = 0; i < prodRanges.size() - 1; i++)
 		{
-			std::pair<int, int> tempPair;
+			std::pair<long long, long long> tempPair;
 			if(prodRanges[i].first > prodRanges[i + 1].first)
 			{
 				tempPair = prodRanges[i];
@@ -109,14 +112,40 @@ void SortProductRanges(std::vector<std::pair<long long, long long>> & prodRanges
 	return;
 }
 
-std::vector<int> GetRangeIndexes(std::vector<std::pair<long long, long long>> & prodRanges)
+std::vector<std::pair<long long, long long>> GetRangeIndexes(std::vector<std::pair<long long, long long>> prodRanges)
 {
-	std::vector<int> returnRangeIndexes;
+	//first index, second index
+	std::vector<std::pair<long long, long long>> returnRanges;
+	auto prodIt = prodRanges.begin();
+	auto currentProd = *(prodIt)++;
 
-	for(int i = 0; i < prodRanges.size(); i++)
+	while(prodIt != prodRanges.end())
 	{
-		
+		std::cout << "Checking low: " << currentProd.first << " high: " << currentProd.second << std::endl;
+		if(currentProd.second >= prodIt->first)
+			currentProd.second = std::max(prodIt->second,currentProd.second);
+		else
+		{
+			returnRanges.push_back(currentProd);
+			currentProd = *(prodIt);
+		}
+		prodIt++;
+	}
+	returnRanges.push_back(currentProd);	
+	
+	return returnRanges;
+}
+
+long long GetTotalofIndexRange(std::vector<std::pair<long long, long long>> ranges)
+{
+	long long returnRangeTotal = 0;
+
+	for(int i = 0; i < ranges.size(); i++)
+	{
+		std::cout << "Range from low: " << ranges[i].first << " to high " << ranges[i].second << std::endl;
+
+		returnRangeTotal += (ranges[i].second - ranges[i].first) + 1;
 	}
 
-	return returnRangeIndexes;
+	return returnRangeTotal;
 }
