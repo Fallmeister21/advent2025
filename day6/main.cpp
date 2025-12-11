@@ -4,27 +4,21 @@ std::vector<std::vector<long long>> ParseInputNums(std::vector<std::string> inpu
 std::vector<long long> ParseNumLine(std::string inputLine);
 std::vector<char> GetOperations(std::string lineOps);
 std::vector<long long> DoMaff(std::vector<std::vector<long long>> maffNums, std::vector<char> operations);
+//doing this is actually gonna make us do maff horizontally again lmao
+std::vector<long long> DoSidewaysMaff(std::vector<std::vector<long long>> maffNums, std::vector<char> operations);
+std::vector<std::vector<long long>> GetNumsTheLongWay(std::vector<std::vector<long long>> maffNums);
+std::vector<long long> ParseNumsTheLongWay(std::vector<long long> maffNumsToParse);
 long long GetGrandTotal(std::vector<long long> maffAnswers);
 
 int main()
 {
-	std::vector<std::string> fileInput = openFile("day6Input");
+	std::vector<std::string> fileInput = openFile("sample");
 
 	//mathematical
 	std::vector<std::vector<long long>> numsForProbs = ParseInputNums(fileInput);
 	std::vector<char> operations = GetOperations(fileInput[fileInput.size() - 1]);
 	std::vector<long long> individualAnswers = DoMaff(numsForProbs, operations);
 	long long grandTotal = GetGrandTotal(individualAnswers);
-
-	for(int i = 0; i < fileInput.size(); i++)
-		std::cout << "Line " << i << ": "  << fileInput[i] << std::endl;
-
-	for(int i = 0; i < operations.size(); i++)
-		std::cout << "Operation " << i << ": "  << operations[i] << std::endl;
-
-	for(int i = 0; i < numsForProbs.size(); i++)
-		for(int j = 0; j < numsForProbs[i].size(); j++)
-			std::cout << "Num " << i << ": "  << numsForProbs[i][j] << std::endl;
 
 	for(int i = 0; i < individualAnswers.size(); i++)
 		std::cout << "Answer " << i << ": "  << individualAnswers[i] << std::endl;
@@ -102,6 +96,32 @@ std::vector<long long> DoMaff(std::vector<std::vector<long long>> maffNums, std:
 	}
 
 	return maffAnswers;
+}
+
+std::vector<long long> DoSidewaysMaff(std::vector<std::vector<long long>> maffNums, std::vector<char> operations)
+{
+
+}
+
+std::vector<std::vector<long long>> GetNumsTheLongWay(std::vector<std::vector<long long>> maffNums)
+{
+	std::vector<std::vector<long long>> horizontalMaffNums;
+
+	for(int i = 0; i < maffNums.size(); i++)
+	{
+		std::vector<long long> tempNums;
+		for(int j = 0; j < maffNums[i].size(); j++)
+		{
+			
+		}
+	}
+
+	return horizontalMaffNums;
+}
+
+std::vector<long long> ParseNumsTheLongWay(std::vector<long long> maffNumsToParse);
+{
+
 }
 
 long long GetGrandTotal(std::vector<long long> maffAnswers)
